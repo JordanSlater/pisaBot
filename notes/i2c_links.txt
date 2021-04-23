@@ -1,0 +1,8 @@
+
+Pi2c is a C++ is a class which allows for easy communication to an Arduino from the Raspberry Pi over the I2C bus.
+https://github.com/JohnnySheppard/Pi2c
+Consider modifying this
+
+A c program that seems to work:
+https://raspberry-projects.com/pi/programming-in-c/i2c/using-the-i2c-interface
+
