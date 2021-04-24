@@ -6,3 +6,8 @@ Consider modifying this
 A c program that seems to work:
 https://raspberry-projects.com/pi/programming-in-c/i2c/using-the-i2c-interface
 
+To get i2c executables to work without sudo I followed this link:
+https://raspberrypi.stackexchange.com/questions/51375/how-to-allow-i2c-access-for-non-root-users
+Then I basically attempted to add my user to an i2c group using this link:
+https://lexruee.ch/setting-i2c-permissions-for-non-root-users.html
+I could not login as root so I just made the file manually with sudo and it seems to work after a reboot :)
