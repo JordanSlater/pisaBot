@@ -1,8 +1,10 @@
 #include <ros/ros.h>
 
-#include "std_msgs/String.h"
+#include <geometry_msgs/AccelStamped.h>
 
 #include <sstream>
+
+#include <MPU6050.h>
 
 // #include <tf2/LinearMath/Quaternion.h>
 // #include <tf2_ros/transform_broadcaster.h>
@@ -31,14 +33,19 @@
 //   br.sendTransform(transformStamped);
 // }
 
+MPU6050 mpu_device(0x68, false);
+
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "mpu_tf2_broadcaster");
+    ros::init(argc, argv, "mpu");
 
-    ros::NodeHandle node;
-    ros::Publisher chatter_pub = node.advertise<std_msgs::String>("pose", 1000);
+    ros::NodeHandle private_note("~");
+    ros::Publisher acceleration_pub = private_note.advertise<geometry_msgs::AccelStamped>("acceleration", 1000);
 
     ros::Rate loop_rate(10);
+
+    float ax, ay, az;
+    float gx, gy, gz;
 
     /**
      * A count of how many messages we have sent. This is used to create
@@ -47,15 +54,24 @@ int main(int argc, char **argv)
     int count = 0;
     while (ros::ok())
     {
-        std_msgs::String msg;
+        mpu_device.update();
+        
+        geometry_msgs::AccelStamped msg;
 
-        std::stringstream ss;
-        ss << "hello world " << count;
-        msg.data = ss.str();
+        msg.header.stamp = ros::Time::now();
+        msg.header.frame_id = "mpu";
 
-        ROS_INFO("%s", msg.data.c_str());
+        mpu_device.getAccel(&ax, &ay, &az);
+        msg.accel.linear.x = ax;
+        msg.accel.linear.y = ay;
+        msg.accel.linear.z = az;
 
-        chatter_pub.publish(msg);
+        mpu_device.getGyro(&gx, &gy, &gz);
+        msg.accel.angular.x = gx;
+        msg.accel.angular.y = gy;
+        msg.accel.angular.z = gz;
+
+        acceleration_pub.publish(msg);
 
         ros::spinOnce();
 
