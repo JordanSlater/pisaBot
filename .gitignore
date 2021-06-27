@@ -53,3 +53,4 @@ CATKIN_IGNORE
 *.out
 
 .vscode/
+arm_rpi/
