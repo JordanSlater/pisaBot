@@ -1,0 +1,16 @@
+Tutorial I follow:
+https://medium.com/@tahsincankose/cross-compiling-ros-project-for-arm-263642b405ac
+
+First step is intalling a cross compiler toolchain.
+When I print the architecture of my laptop I get: amd64.
+When I print the architecture of the rpi I get: arm64.
+
+And the dep pkgs the tutorial installed were:
+lib32z1-dev
+gcc-arm-linux-gnueabihf
+g++-arm-linux-gnueabihf
+And these were specific for armhf
+
+So I did some digging and found the arm64 equivalents:
+I'm going to skip the first one since I don't know that it's required.
+gcc-aarch64-linux-gnu (https://packages.debian.org/stretch/gcc-aarch64-linux-gnu)
