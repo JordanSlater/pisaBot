@@ -5,6 +5,6 @@ echo "done"
 
 mkdir -p ~/pisaBot/arm_rpi/opt/ros/
 
-echo -n "copying ... "
-cp -r /opt/ros/noetic/ ~/pisaBot/arm_rpi/opt/ros/noetic/
+echo "beginning scp (secure copy):"
+scp -r ubuntu@192.168.2.47:/opt/ros/noetic/* ~/pisaBot/arm_rpi/opt/ros/noetic/
 echo "done"
