@@ -1,0 +1,3 @@
+[submodule "src/mpu/src/MPU6050-C-CPP-Library-for-Raspberry-Pi"]
+	path = src/mpu/src/MPU6050-C-CPP-Library-for-Raspberry-Pi
+	url = git@github.com:JordanSlater/MPU6050-C-CPP-Library-for-Raspberry-Pi.git
