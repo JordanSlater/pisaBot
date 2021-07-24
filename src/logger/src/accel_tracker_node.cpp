@@ -7,41 +7,47 @@
 // #include <turtlesim/Pose.h>
 
 
-ros::Time prev_accel_msg_time;
-geometry_msgs::TransformStamped transformStamped;
+// ros::Time prev_accel_msg_time;
+// geometry_msgs::TransformStamped transformStamped;
+tf2::Stamped<tf2::Transform> transformStamped;
 
-void accelCallback(const geometry_msgs::AccelStamped& msg){
+void accelCallback(const geometry_msgs::AccelStamped& accel_msg){
     static tf2_ros::TransformBroadcaster br;
-    double dt = (msg.header.stamp - prev_accel_msg_time).toSec();
+    double dt = (accel_msg.header.stamp - transformStamped.stamp_).toSec();
 
-    transformStamped.header.stamp = ros::Time::now();
-    transformStamped.header.frame_id = "map";
-    transformStamped.child_frame_id = "mpu2";
+    transformStamped.stamp_ = ros::Time::now();
+    transformStamped.frame_id_ = "map";
+    // transformStamped.child_frame_id = "mpu2";
 
-    transformStamped.transform.translation.x += msg.accel.linear.x * dt * dt;
-    transformStamped.transform.translation.y += msg.accel.linear.y * dt * dt;
-    transformStamped.transform.translation.z += msg.accel.linear.z * dt * dt;
+    transformStamped.setOrigin(tf2::Vector3(0, 0, 0));
+    // transformStamped.transform.translation.x += accel_msg.accel.linear.x * dt * dt;
+    // transformStamped.transform.translation.y += accel_msg.accel.linear.y * dt * dt;
+    // // subtract one g of gravity
+    // transformStamped.transform.translation.z += (accel_msg.accel.linear.z - 1) * dt * dt;
 
-    tf2::Vector3 vector;
-    tf2::fromMsg(transformStamped.transform.translation, vector);
+    // tf2::Vector3 translation;
+    // tf2::fromMsg(transformStamped.transform.translation, translation);
 
-    if (vector.length() > 1)
-    {
-        transformStamped.transform.translation.x = 0;
-        transformStamped.transform.translation.y = 0;
-        transformStamped.transform.translation.z = 0;
-    }
+    // if (translation.length() > 1)
+    // {
+    //     transformStamped.transform.translation.x = 0;
+    //     transformStamped.transform.translation.y = 0;
+    //     transformStamped.transform.translation.z = 0;
+    // }
 
-    // tf2::Quaternion q;
-    // q.setRPY(0, 0, msg->theta);
-    transformStamped.transform.rotation.x = 0.0;// q.x();
-    transformStamped.transform.rotation.y = 0.0;// q.y();
-    transformStamped.transform.rotation.z = 0.0;// q.z();
-    transformStamped.transform.rotation.w = 1.0;// q.w();
+    double roll, pitch, yaw;
+    tf2::Matrix3x3(transformStamped.getRotation()).getRPY(roll, pitch, yaw);
+    tf2::Quaternion new_rotation;
+    new_rotation.setRPY(
+        roll + accel_msg.accel.angular.x * dt, 
+        pitch + accel_msg.accel.angular.y * dt,
+        yaw + accel_msg.accel.angular.z * dt);
+    transformStamped.setRotation(new_rotation);
 
     ROS_INFO_STREAM("sent transform");
-    br.sendTransform(transformStamped);
-    prev_accel_msg_time = msg.header.stamp;
+    auto transform_msg = tf2::toMsg(transformStamped);
+    transform_msg.child_frame_id = "mpu2";
+    br.sendTransform(transform_msg);
 }
 
 int main(int argc, char **argv)
@@ -50,7 +56,7 @@ int main(int argc, char **argv)
 
     ros::NodeHandle node;
 
-    prev_accel_msg_time = ros::Time::now();
+    transformStamped.stamp_ = ros::Time::now();
     ros::Subscriber sub = node.subscribe("/mpu/acceleration", 1000, accelCallback);
     ros::spin();
     return 0;
