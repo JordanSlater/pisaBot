@@ -14,7 +14,7 @@ tf2::Stamped<tf2::Transform> transformStamped;
 void UpdateTransform(geometry_msgs::Accel accel, double dt)
 {
     // this was tuned when dt was roughly 0.054 to 0.066
-    const double alpha = 0.94;
+    const double alpha = 1.0 + 0 *0.94;
 
     static double gx, gy, gz;
     static bool first = true;
@@ -33,19 +33,28 @@ void UpdateTransform(geometry_msgs::Accel accel, double dt)
 
     // ROS_INFO_STREAM("\n gx: " << gx << "\n gy: " << gy << "\n gz: " << gz);
 
-    transformStamped.setOrigin(tf2::Vector3(0, 0, 0));
-    double roll, pitch, yaw;
-    tf2::Matrix3x3(transformStamped.getRotation()).getRPY(roll, pitch, yaw);
-    tf2::Quaternion new_rotation;
-    const double IDKWHY = 1.0;
-    const double degToRad = M_PI / 180.0;
-    new_rotation.setRPY(
-        roll + degToRad * gx * dt * IDKWHY,
-        pitch + degToRad * gy * dt * IDKWHY,
-        yaw + degToRad * gz * dt * IDKWHY);
+    // transformStamped.setOrigin(tf2::Vector3(0, 0, 0));
+    // double roll, pitch, yaw;
+    // tf2::Matrix3x3(transformStamped.getRotation()).getRPY(roll, pitch, yaw);
+    // tf2::Quaternion new_rotation;
+    // const double IDKWHY = 1.0;
+    // const double degToRad = M_PI / 180.0;
+    // new_rotation.setRPY(
+    //     roll + degToRad * gx * dt * IDKWHY,
+    //     pitch + degToRad * gy * dt * IDKWHY,
+    //     yaw + degToRad * gz * dt * IDKWHY);
 
+
+    tf2::Quaternion rotation;
+    const double degToRad = M_PI / 180.0;
+    rotation.setRPY(
+        degToRad * gx * dt,
+        degToRad * gy * dt,
+        degToRad * gz * dt);
+
+    transformStamped.mult(transformStamped, tf2::Transform(rotation));
     ROS_INFO_STREAM("dt: " << dt);
-    transformStamped.setRotation(new_rotation);
+    // transformStamped.setRotation(new_rotation);
 }
 
 void accelCallback(const geometry_msgs::AccelStamped& accel_msg){
