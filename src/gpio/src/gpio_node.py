@@ -23,7 +23,7 @@ class MotorDriver:
         self.__direction_pin__ = direction_pin
 
     def set_speed(self, speed_msg):
-        speed = speed_msg.data
+        speed = min(1, max(-1, speed_msg.data))
         print("setting speed to: ", speed)
         self.__set_magnitude__(abs(speed))
         self.__set_direction__(speed > 0)
@@ -42,9 +42,9 @@ class MotorDriver:
 
     def __set_direction__(self, forward:bool):
         if (forward):
-            gpio.output(self.__direction_pin__, gpio.HIGH)
+            GPIO.output(self.__direction_pin__, GPIO.HIGH)
         else:
-            gpio.output(self.__direction_pin__, gpio.LOW)
+            GPIO.output(self.__direction_pin__, GPIO.LOW)
 
     def __delete__(self):
         self.__pwm__.stop()
