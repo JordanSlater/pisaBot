@@ -1,0 +1,2 @@
+catkin_make --only-pkg-with-deps motor_driver
+catkin_make -DCATKIN_WHITELIST_PACKAGES=""
