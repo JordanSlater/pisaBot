@@ -28,9 +28,6 @@ Stepper spec sheet:
 https://cdn-shop.adafruit.com/product-files/324/C140-A+datasheet.jpg
 
 
-Putin:
-https://www.youtube.com/watch?v=_AkAZIk73F0
-
 raspberry pi:
 GPIO:
 https://www.raspberrypi.org/documentation/usage/gpio/
