@@ -10,17 +10,17 @@ from dataclasses import dataclass, field
 from typing import Any, NewType
 
 Pin = NewType('Pin', int)
-# R_MOTOR_GPIO = Pin(4)
 
 MOTOR_MAX_FREQUENCY = 1500
 
 class MotorDriver:
-    def __init__(self, speed_pin:Pin, direction_pin:Pin):
+    def __init__(self, speed_pin:Pin, direction_pin:Pin, flipped:bool=False):
         GPIO.setup(speed_pin, GPIO.OUT)
         self.__speed__ = 0
         self.__pwm__ = GPIO.PWM(speed_pin, MOTOR_MAX_FREQUENCY)
         GPIO.setup(direction_pin, GPIO.OUT)
         self.__direction_pin__ = direction_pin
+        self.__flipped__ = flipped
 
     def set_speed(self, speed_msg):
         speed = min(1, max(-1, speed_msg.data))
@@ -41,7 +41,7 @@ class MotorDriver:
             self.__pwm__.start(50)
 
     def __set_direction__(self, forward:bool):
-        if (forward):
+        if (forward ^ (self.__flipped__)): # ^ is xor
             GPIO.output(self.__direction_pin__, GPIO.HIGH)
         else:
             GPIO.output(self.__direction_pin__, GPIO.LOW)
@@ -54,9 +54,11 @@ def main():
     GPIO.setmode(GPIO.BCM)
 
     right_motor = MotorDriver(Pin(4), Pin(14))
+    left_motor = MotorDriver(Pin(17), Pin(18), flipped = True)
 
     rospy.Subscriber('set_speed_right_motor', Float32, right_motor.set_speed)
-    rospy.loginfo("Motor service up.")
+    rospy.Subscriber('set_speed_left_motor', Float32, left_motor.set_speed)
+    rospy.loginfo("Motor services up.")
 
     try:
         rospy.spin()
@@ -64,6 +66,7 @@ def main():
         pass
 
     del right_motor
+    del left_motor
     GPIO.cleanup()
 
 if __name__ == '__main__':
