@@ -1,2 +1,5 @@
-catkin_make --only-pkg-with-deps motor_driver
+On rpi:
+catkin_make --only-pkg-with-deps mpu gpio
 catkin_make -DCATKIN_WHITELIST_PACKAGES=""
+
+On laptop:

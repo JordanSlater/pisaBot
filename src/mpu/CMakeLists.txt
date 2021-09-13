@@ -134,6 +134,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node src/mpu_node.cpp)
+add_executable(basic_mpu_transform_node src/basic_mpu_transform_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -144,11 +145,13 @@ add_executable(${PROJECT_NAME}_node src/mpu_node.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(basic_mpu_transform_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
                       ${catkin_LIBRARIES}
                       MPU6050) # depends on /usr/include/MPU6050.h and /usr/lib/libMPU6050.so
+target_link_libraries(basic_mpu_transform_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##
