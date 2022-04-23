@@ -1,0 +1,2 @@
+The 3V3 connection is closest to a.
+The motor voltage () is closest to j.

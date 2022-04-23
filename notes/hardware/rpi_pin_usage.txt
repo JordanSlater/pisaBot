@@ -1,0 +1,24 @@
+
+https://www.tomshardware.com/reviews/raspberry-pi-gpio-pinout,6122.html
+This is a top down perspective and the sd card is closest to pin 1 (top left)
+
+                      Breadboard 3v3  -     3V3  R  (1) ** (2)  5V      -  Input from power board
+                             IMU SDA  -   GPIO2  a  (3) ** (4)  5V      -
+                             IMU SCL  -   GPIO3  s  (5) ** (6)  GND     -
+                    Right Motor Step  -   GPIO4  p  (7) ** (8)  GPIO14  -  Right Motor Direction
+                      Breadboard GND  -     GND  b  (9) ** (10) GPIO15  -
+                     Left Motor Step  -  GPIO17  e (11) ** (12) GPIO18  -  Left Motor Direction
+                                      -  GPIO27  r (13) ** (14) GND     -
+                                      -  GPIO22  r (15) ** (16) GPIO23  -
+                                      -     3V3  y (17) ** (18) GPIO24  -
+                                      -  GPIO10    (19) ** (20) GND     -
+                                      -   GPIO9  P (21) ** (22) GPIO25  -
+                                      -  GPIO11  i (23) ** (24) GPIO8   -
+                                      -     GND    (25) ** (26) GPIO7   -
+                                      -   GPIO0  4 (27) ** (28) GPIO1   -
+                                      -   GPIO5    (29) ** (30) GND     -
+                                      -   GPIO6  M (31) ** (32) GPIO12  -
+                                      -  GPIO13  o (33) ** (34) GND     -
+                                      -  GPIO19  d (35) ** (36) GPIO16  -
+                                      -  GPIO26  e (37) ** (38) GPIO20  -
+                                      -     GND  l (39) ** (40) GPIO21  -

@@ -1,0 +1,88 @@
+2022-04-21:
+When working on this again for the 4GB raspberry pi 4 I found this:
+https://arstechnica.com/gadgets/2021/02/ubuntu-core-20-adds-secure-boot-with-hardware-backed-encryption/
+I didn't read all of it.
+I'm going to try core this time. I think I tried server on the first raspberry pi. It was harder to setup for wifi and it interrupted the logs. 
+While trying to get core working I found that it doesn't have access to apt or debian packages.
+So I'm following this link:
+https://askubuntu.com/questions/902905/install-applications-in-ubuntu-core
+It didn't work. Sudo gives this message:
+sudo: effective uid is not 0, is /usr/bin/sudo on a file system with the 'nosuid' option set or an NFS file system without root privileges?
+And to solve it I have to go here:
+https://stackoverflow.com/questions/16682297/getting-message-sudo-must-be-setuid-root-but-sudo-is-already-owned-by-root/19306929#19306929
+But I can't start the rpi in recovery mode. :/
+
+I'm going to try server again but this time use the instructions below for wifi.
+Hopefully I can get it working again...
+I got the internet working again!
+
+
+The below entry is from some time in 2021 or 2020 when I was trying to reinstall ubuntu on the burnt pi. I think I installed ubuntu server 20 now that I'm looking at it the interface.
+2021-XX-XX? 
+I was reading this document again and planning on reinstalling ubuntu.
+And I couldn't figure out what I installed on rpi: server or core?
+When I look at the rpi installer I have the option of choosing:
+Ubuntu Server 21.04 (RPi 2/3/4/400)
+    64-bit server OS for arm64 architectures
+Ubuntu Server 20.04.3 LTS (RPi 3/4/400)
+    64-bit server OS with long-term support for arm 64 architectures
+Ubuntu Core 20 (RPi 3/4)
+    Ubuntu Core 20 64-bit IoT OS for arm64 architecture
+I'm going to trust my usage of the word core below.
+I redd this: https://www.makeuseof.com/tag/difference-ubuntu-desktop-ubuntu-server/
+
+
+I am on 1.5 of http://wiki.ros.org/noetic/Installation/Ubuntu
+for both rpi and ubuntu
+
+To setup the raspberry pi:
+1. I installed ubuntu 20.04 on my laptop.
+2. I installed the rpi installer and wrote ubuntu core 20.04 to the sd card.
+3. I booted the rpi with said sd card and connected it with ethernet. 
+4. Connecting to wifi did not work because ubuntu tries to connect using a strange protocol that is not WPA. After a long time of trying to connect I found that using the program wpa_supplicant (this is the cli program name) works.
+5. I added a wifi config by running the following command:
+wpa_passphrase "NETWORK_NAME" password | sudo tee /etc/wpa_supplicant/wpa_supplicant.conf
+6. I created a very crewd script called connect_to_wifi.sh:
+#!/bin/bash/sh
+echo "******************"
+echo "CONNECTING TO WIFI"
+echo "******************"
+sudo wpa_supplicant -c /etc/wpa_supplicant/wpa_supplicant.conf -i wlan0 & echo "sudo PID "$!
+sleep 3
+sudo dhclient wlan0
+ifconfig wlan0
+echo "DONE?"
+7. And another very crewd script called disconnect_wifi.sh:
+#!/bin/bash/sh
+
+PROCESSES=$(ps -e | grep "wpa_supplicant")
+WPA_PID=$(echo $PROCESSES | cut -d ' ' -f1)
+
+if [ -z $WPA_PID ]
+then
+    echo "No PID found for wpa_supplicant. Exiting."
+    return 0
+fi
+
+echo
+echo "Process with wpa_supplicant in the command:"
+echo $PROCESSES
+echo
+echo "Would you like to kill PID "$WPA_PID"? (y/n)"
+
+read input
+
+if [ $input = "y" ]
+then
+    echo "Killing PID "$WPA_PID"..."
+    sudo kill $WPA_PID
+    sleep 2
+    echo "DONE?"
+fi
+8. I made the script executable (chmod +x SCRIPT_NAME)
+9. I then used the following command to add the script to the reboot process
+sudo crontab -eu root
+10. The text I entered was:
+@reboot sh /home/ubuntu/connect_to_wifi.sh
+11. Then I rebooted and it automatically connects to the wifi!
+

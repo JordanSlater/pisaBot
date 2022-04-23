@@ -1,0 +1,26 @@
+I ordered off of amazon:
+https://www.amazon.ca/Gikfun-MPU-6050-Accelerometer-Gyroscope-EK1091x3C/dp/B07JPK26X2
+
+Title:
+Gikfun GY-521 MPU-6050 3 Axis Accelerometer Gyroscope Module 6 DOF 6-axis Accelerometer Gyroscope Sensor Module for Arduino DIY(Pack of 3) EK1091x3C
+
+Description:
+    Use the chip: MPU-6050
+    Power supply :3-5v (internal low dropout regulator)
+    Communication modes: standard IIC communications protocol
+    Chip built-in 16bit AD converter, 16-bit data output
+    We’d like to receive your valuable suggestions for our products and make your idea come true.
+
+Technical Details
+    MPU-6050 modules (three-axis gyroscope + three-axis accelerometer)
+    Use the chip: MPU-6050
+    Power supply :3-5v (internal low dropout regulator)
+    Communication modes: standard IIC communications protocol
+    Chip built-in 16bit AD converter, 16-bit data output
+    Acceleration range: ± 2 ± 4 ± 8 ± 16g
+    Immersion Gold PCB machine welding process to ensure quality Pin pitch 2.54mm
+
+There was no spec sheet on the amazon page so I went here, to get my spec sheet:
+    https://www.hotmcu.com/gy521-mpu6050-3axis-acceleration-gyroscope-6dof-module-p-83.html
+
+I'm going to try the 3.3V first.

@@ -1,0 +1,5 @@
+gyro - burnt this one
+https://www.robotshop.com/ca/en/6-dof-gyro-accelerometer-imu-mpu6050.html
+How the chip allows 3 to 5 V:
+    This is IC2 on the schematic:
+    https://datasheetspdf.com/pdf/563919/SHANGHAIBELLING/BL8555/1
