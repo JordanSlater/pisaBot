@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-#include <MPU6050.h>
+#include "mpu6050/mpu6050.h"
 
 MPU6050 mpu_device(0x68, false);
 
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 
     while (ros::ok())
     {
-        mpu_device.update();
+        mpu_device.manual_update();
         
         geometry_msgs::AccelStamped msg;
 

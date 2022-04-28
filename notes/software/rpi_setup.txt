@@ -86,3 +86,21 @@ sudo crontab -eu root
 @reboot sh /home/ubuntu/connect_to_wifi.sh
 11. Then I rebooted and it automatically connects to the wifi!
 
+Once I was setup and remoted in:
+1. I cloned the root repo.
+2. I cloned jshen.
+3. I ran `git submodule update --init` to clone the MPU6050 submodule.
+4. I redd the MPU6050 library's readme and found that I needed to install these: sudo apt-get install libi2c-dev i2c-tools libi2c0
+5. I also had trouble with i2c. When I ran the code I got the following errors:
+    ERR (MPU6050.cpp:MPU6050()): Failed to open /dev/i2c-1. Please check that I2C is enabled with raspi-config
+    ERR (MPU6050.cpp:MPU6050()): Could not get I2C bus with h address. Please confirm that this address is correct
+    I redd up on this and found that I need to install raspi-config and run sudo raspi-config nonint do_i2c 0.
+    Sources:
+        https://pi3g.com/2021/05/20/enabling-and-checking-i2c-on-the-raspberry-pi-using-the-command-line-for-your-own-scripts/
+        https://forums.raspberrypi.com/viewtopic.php?t=292973
+    I did the following: 
+        navigate to the latest: http://archive.raspberrypi.org/debian/pool/main/r/raspi-config/
+        and wget <the url to the latest package>
+        sudo dpkg -i that_package
+    This was the solution! https://askubuntu.com/questions/1273700/enable-spi-and-i2c-on-ubuntu-20-04-raspberry-pi
+        

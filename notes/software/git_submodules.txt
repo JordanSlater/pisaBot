@@ -1,0 +1,10 @@
+https://www.youtube.com/watch?v=gSlXo2iLBro
+
+You can add the following to all git commands to do the same command for the submodules as well. 
+--recurse-submodules
+
+After cloning you can do the following to clone the submodules:
+git submodule update --init
+
+You must make a commit on the submodule before you can add it to the root repo. 
+Then you can git add that submodule and it will be staged on the root repo. 
