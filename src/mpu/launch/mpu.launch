@@ -1,0 +1,11 @@
+<launch>
+    <arg name="gyro_sensitivity" value="1" />
+    <arg name="acceleration_sensitivity" value="1" />
+
+    <node type="mpu_node" name="mpu" pkg="mpu" output="screen">
+        <param name="calibration/gyro/sensitivity" value="$(arg gyro_sensitivity)" />
+        <param name="calibration/acceleration/sensitivity" value="$(arg acceleration_sensitivity)" />
+        <rosparam file="$(find mpu)/config/calibration/gyro_$(arg gyro_sensitivity).yaml" />
+        <rosparam file="$(find mpu)/config/calibration/acceleration_$(arg acceleration_sensitivity).yaml" />
+    </node>
+</launch>

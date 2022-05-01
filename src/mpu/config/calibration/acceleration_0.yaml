@@ -1,0 +1,6 @@
+calibration:
+    acceleration:
+        offset:
+            X: 3036.15
+            Y: -436.846
+            Z: -20220.4

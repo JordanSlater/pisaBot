@@ -1,0 +1,6 @@
+calibration:
+    gyro:
+        offset:
+            R:  4.985
+            P:  28.734
+            Y:  -9.195
