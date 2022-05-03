@@ -103,4 +103,12 @@ Once I was setup and remoted in:
         and wget <the url to the latest package>
         sudo dpkg -i that_package
     This was the solution! https://askubuntu.com/questions/1273700/enable-spi-and-i2c-on-ubuntu-20-04-raspberry-pi
-        
+6. There was also a dependency of rpi.GPIO which I installed by running:
+    sudo pip install RPi.GPIO
+
+    I then did a sudo apt-get upgrade
+
+
+    followed: https://sourceforge.net/p/raspberry-gpio-python/wiki/install/
+
+    I'm not sure what of the three above things did it. 
