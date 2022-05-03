@@ -4,12 +4,25 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <geometry_msgs/AccelStamped.h>
 #include <geometry_msgs/TransformStamped.h>
-// #include <turtlesim/Pose.h>
 
-
-// ros::Time prev_accel_msg_time;
-// geometry_msgs::TransformStamped transformStamped;
 tf2::Stamped<tf2::Transform> transformStamped;
+
+tf2::Quaternion loadInitialRotation(
+    const ros::NodeHandle & private_node)
+{
+    tf2::Quaternion rotation;
+    double r, p, y;
+    private_node.param("starting_orientation/roll", r, 0.0);
+    private_node.param("starting_orientation/pitch", p, 0.0);
+    private_node.param("starting_orientation/yaw", y, 0.0);
+    const double degrees_to_rad = M_PI / 180.0;
+    rotation.setRPY(
+        r * degrees_to_rad,
+        p * degrees_to_rad,
+        y * degrees_to_rad);
+    ROS_INFO_STREAM("Set initial rotation to: " << r << ", " << p << ", " << y);
+    return rotation;
+}
 
 void UpdateTransform(geometry_msgs::Accel accel, double dt)
 {
@@ -31,20 +44,6 @@ void UpdateTransform(geometry_msgs::Accel accel, double dt)
         gz = gz * (1 - alpha) + accel.angular.z * alpha;
     }
 
-    // ROS_INFO_STREAM("\n gx: " << gx << "\n gy: " << gy << "\n gz: " << gz);
-
-    // transformStamped.setOrigin(tf2::Vector3(0, 0, 0));
-    // double roll, pitch, yaw;
-    // tf2::Matrix3x3(transformStamped.getRotation()).getRPY(roll, pitch, yaw);
-    // tf2::Quaternion new_rotation;
-    // const double IDKWHY = 1.0;
-    // const double degToRad = M_PI / 180.0;
-    // new_rotation.setRPY(
-    //     roll + degToRad * gx * dt * IDKWHY,
-    //     pitch + degToRad * gy * dt * IDKWHY,
-    //     yaw + degToRad * gz * dt * IDKWHY);
-
-
     tf2::Quaternion rotation;
     const double degToRad = M_PI / 180.0;
     rotation.setRPY(
@@ -54,18 +53,12 @@ void UpdateTransform(geometry_msgs::Accel accel, double dt)
 
     transformStamped.mult(transformStamped, tf2::Transform(rotation));
     ROS_INFO_STREAM("dt: " << dt);
-    // transformStamped.setRotation(new_rotation);
 }
 
 void accelCallback(const geometry_msgs::AccelStamped& accel_msg){
     static tf2_ros::TransformBroadcaster br;
     double dt = (accel_msg.header.stamp - transformStamped.stamp_).toSec();
 
-    // static bool first = true;
-    // if (first)
-    // {
-    //     first = false;
-    // }
     if (dt < 0)
         ROS_ERROR_STREAM("accel_msg.header.stamp: " << accel_msg.header.stamp << ", transformStamped.stamp_: " << transformStamped.stamp_);
     transformStamped.stamp_ = accel_msg.header.stamp;
@@ -81,14 +74,14 @@ void accelCallback(const geometry_msgs::AccelStamped& accel_msg){
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "accel_tracker");
+    ros::init(argc, argv, "localization");
 
     ros::NodeHandle node;
+    ros::NodeHandle private_node("~");
 
-    tf2::Quaternion rotation = transformStamped.getRotation();
-    rotation.setRPY(0, 0, 0.75 * M_PI);
+    tf2::Quaternion rotation = loadInitialRotation(private_node);
     transformStamped.setRotation(rotation);
- 
+
     ros::Subscriber sub = node.subscribe("/mpu/acceleration", 1000, accelCallback);
     ros::spin();
     return 0;
