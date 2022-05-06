@@ -2,6 +2,8 @@ Soldering kit
 https://www.robotshop.com/ca/en/plusivo-soldering-iron-kit-w--digital-multimeter-us-plug.html
 Stepper controller
 https://www.robotshop.com/ca/en/drv8825-stepper-motor-driver-header-pins-soldered.html
+    Instructions:
+    https://www.pololu.com/product/2133
 
 stepper motor
 https://www.buyapi.ca/product/stepper-motor-nema-17-size-200-stepsrev-12v-350ma/
@@ -21,4 +23,5 @@ https://web.mit.edu/evt/summary_battery_specifications.pdf
 Stepper spec sheet:
 https://cdn-shop.adafruit.com/product-files/324/C140-A+datasheet.jpg
 
-
+Power converter board:
+https://www.robotshop.com/ca/en/step-down-dc-dc-power-converter-25w.html?gclid=Cj0KCQjw37iTBhCWARIsACBt1IzUwOPZOjBFNwgWT2w4SMzC5mRYk_axi5ChePQBquTXATNN71xn8fAaAmQ8EALw_wcB

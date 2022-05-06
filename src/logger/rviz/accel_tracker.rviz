@@ -8,7 +8,6 @@ Panels:
         - /Status1
         - /TF1
         - /TF1/Frames1
-        - /AccelStamped1/Status1
       Splitter Ratio: 0.4735293984413147
     Tree Height: 719
   - Class: rviz/Selection
@@ -64,8 +63,6 @@ Visualization Manager:
           Value: false
         mpu:
           Value: true
-        mpu2:
-          Value: true
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -75,8 +72,6 @@ Visualization Manager:
       Tree:
         map:
           mpu:
-            {}
-          mpu2:
             {}
       Update Interval: 0
       Value: true
@@ -123,7 +118,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.3183133602142334
+      Distance: 2.326791524887085
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -139,9 +134,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3903982639312744
+      Pitch: 0.4303983449935913
       Target Frame: <Fixed Frame>
-      Yaw: 0.9853960275650024
+      Yaw: 0.19540388882160187
     Saved: ~
 Window Geometry:
   Displays:
