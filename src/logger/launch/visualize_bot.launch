@@ -1,10 +1,11 @@
 <launch>
     <!-- Load the urdf into the parameter server. -->
     <param name="robot_description" textfile="$(find localization)/urdf/bot.xml"/>
+    <!-- rosparam set /robot_description -t ~/pisaBot/src/localization/urdf/bot.xml -->
 
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
 
     <node type="rviz" name="rviz" pkg="rviz" args="-d $(find logger)/rviz/visualize_bot.rviz" />
 
-    <node pkg="tf2_ros" type="static_transform_publisher" name="robot_position" args="0 0 0 0 0 0 1 map body" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="robot_position" args="0 0 0.0325 0 0 0 1 map body" />
 </launch>

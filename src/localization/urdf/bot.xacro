@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!-- xacro ~/pisaBot/src/localization/urdf/bot.xacro > ~/pisaBot/src/localization/urdf/bot.xml && roslaunch logger visualize_bot.launch -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="pisaBot">
+    <xacro:property name="wheel_diameter" value="0.065" />
+    <xacro:property name="wheel_to_wheel_distance" value="0.123" /> 
+    <xacro:property name="back_thickness" value="0.00625" /> 
+    <xacro:property name="rad_per_deg" value="${pi/180}" /> 
+    <xacro:macro name="material">
+        <material name="Grey">
+            <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+    </xacro:macro>
+
+    <link name="body">
+        <visual>
+            <origin xyz="${back_thickness/2 - 0.037} 0 ${0.15-0.006}" rpy="0 0 0" />
+            <geometry>
+                <box size="${back_thickness} 0.08 0.3" />
+            </geometry>
+            <xacro:material/>
+        </visual>
+        <visual>
+            <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
+            <geometry>
+                <box size="0.042 0.042 0.08" />
+            </geometry>
+            <xacro:material/>
+        </visual>
+        <visual>
+            <origin xyz="0 ${wheel_to_wheel_distance/2} 0" rpy="${pi/2} 0 0" />
+            <geometry>
+                <cylinder length="0.027" radius="${wheel_diameter/2}"/>
+            </geometry>
+            <xacro:material/>
+        </visual>
+        <visual>
+            <origin xyz="0 ${-wheel_to_wheel_distance/2} 0" rpy="${-pi/2} 0 0" />
+            <geometry>
+                <cylinder length="0.027" radius="${wheel_diameter/2}"/>
+            </geometry>
+            <xacro:material/>
+        </visual>
+    </link>
+
+    <link name="mpu"/>
+
+    <joint name="mpu_frame" type="fixed">
+        <origin xyz="${back_thickness/2 - 0.037 + 0.0375 - 0.002} 0.01 0.157" rpy="${1 * rad_per_deg} ${pi/2 - 0 * rad_per_deg} ${pi + 2 * rad_per_deg}" />
+        <parent link="body" />
+        <child link="mpu" />
+    </joint>
+    <!-- 0.157 m above the center
+    0.002286 m off center
+    37.5 cm in front of the back, the board is 1.5 mm thick -->
+</robot>

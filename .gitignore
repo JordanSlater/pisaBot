@@ -54,3 +54,4 @@ CATKIN_IGNORE
 
 .vscode/
 arm_rpi/
+src/localization/urdf/bot.xml
