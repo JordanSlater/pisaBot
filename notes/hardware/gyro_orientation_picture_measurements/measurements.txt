@@ -1,0 +1,15 @@
+roll:
+    x_orientation: "into the image"
+    base: -0.9
+    imu: +2.0
+    total: +2.9
+pitch:
+    y_orienttation: "into the image"
+    base: +1.5
+    imu: +2.1
+    total: +0.6
+yaw:
+    z_orientation: "into the image"
+    base: 0.0
+    imu: -1.0
+    total: -1.0
