@@ -1,20 +1,28 @@
-#include "ros/ros.h"
-#include "std_msgs/String.h"
+#include <ros/ros.h>
+#include <tf2_ros/transform_listener.h>
+#include <geometry_msgs/TransformStamped.h>
 
-void chatterCallback(const std_msgs::String::ConstPtr& msg)
-{
-    ROS_INFO("I heard: [%s]", msg->data.c_str());
-}
+int main(int argc, char** argv){
+    ros::init(argc, argv, "my_tf2_listener");
 
-int main(int argc, char **argv)
-{
-    ros::init(argc, argv, "listener");
+    ros::NodeHandle node;
 
-    ros::NodeHandle n;
+    tf2_ros::Buffer tfBuffer;
+    tf2_ros::TransformListener tfListener(tfBuffer);
 
-    ros::Subscriber sub = n.subscribe("", 1000, chatterCallback);
+    ros::Rate rate(0.1);
+    while (node.ok()){
+        geometry_msgs::TransformStamped transformStamped;
+        try{
+            transformStamped = tfBuffer.lookupTransform("map", "mpu", ros::Time(0));
+        }
+        catch (tf2::TransformException &ex) {
+            ROS_WARN("%s", ex.what());
+            ros::Duration(1.0).sleep();
+            continue;
+        }
 
-    ros::spin();
-
+        rate.sleep();
+    }
     return 0;
-}
+};
