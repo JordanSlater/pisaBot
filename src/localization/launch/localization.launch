@@ -1,0 +1,9 @@
+<launch>
+    <include file="$(find mpu)/launch/mpu.launch" />
+    <node name="localization" pkg="localization" type="localization_node">
+        <param name="starting_orientation/roll"  value="180" />
+        <param name="starting_orientation/pitch" value="0" />
+        <param name="starting_orientation/yaw"   value="0" />
+        <param name="robot_description" textfile="$(find localization)/urdf/bot.xml"/>
+    </node>
+</launch>

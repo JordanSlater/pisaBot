@@ -12,6 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   tf2_ros
+  kdl_parser
+  robot_state_publisher
 )
 
 ## System dependencies are found with CMake's conventions

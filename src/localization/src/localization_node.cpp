@@ -4,6 +4,8 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <geometry_msgs/AccelStamped.h>
 #include <geometry_msgs/TransformStamped.h>
+#include <kdl_parser/kdl_parser.hpp>
+#include <robot_state_publisher/robot_state_publisher.h>
 
 tf2::Stamped<tf2::Transform> transformStamped;
 
@@ -72,12 +74,30 @@ void accelCallback(const geometry_msgs::AccelStamped& accel_msg){
     br.sendTransform(transform_msg);
 }
 
+bool getTree(ros::NodeHandle & node, KDL::Tree & tree)
+{
+    std::string robot_description;
+    node.param("robot_description", robot_description, std::string());
+    if (!kdl_parser::treeFromString(robot_description, tree)){
+        ROS_ERROR("Failed to construct kdl tree");
+        return false;
+    }
+    return true;
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "localization");
 
-    ros::NodeHandle node;
     ros::NodeHandle private_node("~");
+    ros::NodeHandle node;
+
+    KDL::Tree tree;
+    if (!getTree(private_node, tree))
+        return -1;
+
+    robot_state_publisher::RobotStatePublisher robotStatePublisher(tree);
+    robotStatePublisher.publishFixedTransforms();
 
     tf2::Quaternion rotation = loadInitialRotation(private_node);
     transformStamped.setRotation(rotation);
