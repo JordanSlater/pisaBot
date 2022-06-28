@@ -70,7 +70,7 @@ void accelCallback(const geometry_msgs::AccelStamped& accel_msg){
     UpdateTransform(accel_msg.accel, dt);
 
     auto transform_msg = tf2::toMsg(transformStamped);
-    transform_msg.child_frame_id = "mpu";
+    transform_msg.child_frame_id = "body";
     br.sendTransform(transform_msg);
 }
 
