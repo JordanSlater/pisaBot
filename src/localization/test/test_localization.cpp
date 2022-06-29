@@ -2,9 +2,9 @@
 #include <gtest/gtest.h>
 
 // Declare a test
-TEST(TestSuite, testCase1)
+TEST(MpuLocalizer, updateNoArgumentsTransform)
 {
-    ASSERT_TRUE(false);
+    ASSERT_TRUE(UpdateTransform());
 }
 
 // Run all the tests that were declared with TEST()
