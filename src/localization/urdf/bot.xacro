@@ -6,9 +6,9 @@
     <xacro:property name="back_thickness" value="0.00625" /> 
     <xacro:property name="rad_per_deg" value="${pi/180}" /> 
 
-    <xacro:property name="imu_roll" value="2.9" />
-    <xacro:property name="imu_pitch" value="0.6" />
-    <xacro:property name="imu_yaw" value="-1.0" />
+    <xacro:property name="mpu_roll" value="2.9" />
+    <xacro:property name="mpu_pitch" value="0.6" />
+    <xacro:property name="mpu_yaw" value="-1.0" />
     <xacro:macro name="material">
         <material name="Grey">
             <color rgba="0.7 0.7 0.7 1.0"/>
@@ -49,22 +49,22 @@
     <link name="mpu"/>
     <link name="ideal_mpu"/>
 
-    <joint name="mpu_frame" type="fixed">
+    <joint name="body_to_ideal_mpu" type="fixed">
+        <parent link="body" />
+        <child link="ideal_mpu" />
         <origin
             xyz="${back_thickness/2 - 0.037 + 0.0375 - 0.002} 0.01 0.157"
             rpy="${0} ${pi/2} ${pi}" />
-        <parent link="body" />
-        <child link="ideal_mpu" />
     </joint>
     <!-- 0.157 m above the center
     0.002286 m off center
     37.5 cm in front of the back, the board is 1.5 mm thick -->
 
-    <joint name="mpu_offset" type="fixed">
+    <joint name="ideal_mpu_to_mpu" type="fixed">
+        <parent link="body" />
+        <child link="mpu" />
         <origin
             xyz="0 0 0"
-            rpy="${imu_roll * rad_per_deg} ${imu_pitch * rad_per_deg} ${imu_yaw * rad_per_deg}" />
-        <parent link="ideal_mpu" />
-        <child link="mpu" />
+            rpy="${mpu_roll * rad_per_deg} ${mpu_pitch * rad_per_deg} ${mpu_yaw * rad_per_deg}" />
     </joint>
 </robot>

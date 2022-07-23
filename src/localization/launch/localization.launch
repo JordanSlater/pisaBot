@@ -1,9 +1,10 @@
 <launch>
+    <param name="robot_description" textfile="$(find localization)/urdf/bot.xml"/>
     <include file="$(find mpu)/launch/mpu.launch" />
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
     <node name="localization" pkg="localization" type="localization_node">
         <param name="starting_orientation/roll"  value="0" />
         <param name="starting_orientation/pitch" value="0" />
         <param name="starting_orientation/yaw"   value="0" />
-        <param name="robot_description" textfile="$(find localization)/urdf/bot.xml"/>
     </node>
 </launch>

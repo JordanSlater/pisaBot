@@ -5,8 +5,6 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <geometry_msgs/AccelStamped.h>
 #include <geometry_msgs/TransformStamped.h>
-#include <kdl_parser/kdl_parser.hpp>
-#include <robot_state_publisher/robot_state_publisher.h>
 
 tf2::Stamped<tf2::Transform> stampedMpuTransform;
 tf2::Transform bodyToMpu;
@@ -73,19 +71,8 @@ void accelCallback(const geometry_msgs::AccelStamped& accel_msg){
     tf2::Stamped<tf2::Transform> stampedBodyTransform = stampedMpuTransform;
 
     auto transform_msg = tf2::toMsg(stampedBodyTransform);
-    transform_msg.child_frame_id = "mpu";
+    transform_msg.child_frame_id = "body";
     br.sendTransform(transform_msg);
-}
-
-bool getTree(ros::NodeHandle & node, KDL::Tree & tree)
-{
-    std::string robot_description;
-    node.param("robot_description", robot_description, std::string());
-    if (!kdl_parser::treeFromString(robot_description, tree)){
-        ROS_ERROR("Failed to construct kdl tree");
-        return false;
-    }
-    return true;
 }
 
 tf2::Transform GetBodyToImuTransform()
@@ -94,7 +81,7 @@ tf2::Transform GetBodyToImuTransform()
     tf2_ros::TransformListener tfListener(tfBuffer);
     ROS_INFO_STREAM("Getting mpu transform...");
     tf2::Transform bodyToMpu;
-    geometry_msgs::TransformStamped stampedBodyToMpuMsg = tfBuffer.lookupTransform("body", "mpu", ros::Time(10));
+    geometry_msgs::TransformStamped stampedBodyToMpuMsg = tfBuffer.lookupTransform("body", "mpu", ros::Time(0), ros::Duration(10));
     geometry_msgs::Transform bodyToMpuMsg = stampedBodyToMpuMsg.transform;
     tf2::fromMsg(bodyToMpuMsg, bodyToMpu);
     ROS_INFO_STREAM("Done");
@@ -107,13 +94,6 @@ int main(int argc, char **argv)
 
     ros::NodeHandle private_node("~");
     ros::NodeHandle node;
-
-    KDL::Tree tree;
-    if (!getTree(private_node, tree))
-        return -1;
-
-    robot_state_publisher::RobotStatePublisher robotStatePublisher(tree);
-    robotStatePublisher.publishFixedTransforms();
 
     bodyToMpu = GetBodyToImuTransform();
 
