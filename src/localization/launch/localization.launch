@@ -1,6 +1,6 @@
 <launch>
     <param name="robot_description" textfile="$(find localization)/urdf/bot.xml"/>
-    <!-- <include file="$(find mpu)/launch/mpu.launch" /> -->
+    <include file="$(find mpu)/launch/mpu.launch" />
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
         <param name="use_tf_static" type="bool" value="false" />
     </node>
