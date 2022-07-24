@@ -61,7 +61,7 @@
     37.5 cm in front of the back, the board is 1.5 mm thick -->
 
     <joint name="ideal_mpu_to_mpu" type="fixed">
-        <parent link="body" />
+        <parent link="ideal_mpu" />
         <child link="mpu" />
         <origin
             xyz="0 0 0"
