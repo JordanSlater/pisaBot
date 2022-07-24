@@ -3,10 +3,11 @@
 #include <tf2_ros/transform_listener.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/static_transform_broadcaster.h>
 #include <geometry_msgs/AccelStamped.h>
 #include <geometry_msgs/TransformStamped.h>
 
-tf2::Stamped<tf2::Transform> stampedMpuTransform;
+tf2::Stamped<tf2::Transform> robotLocation{};
 tf2::Transform bodyToMpu;
 
 tf2::Quaternion loadInitialRotation(
@@ -46,36 +47,40 @@ void UpdateTransform(geometry_msgs::Accel accel, double dt)
         gz = gz * (1 - alpha) + accel.angular.z * alpha;
     }
 
+    constexpr double degToRad = M_PI / 180.0;
     tf2::Quaternion rotation;
-    const double degToRad = M_PI / 180.0;
     rotation.setRPY(
         degToRad * gx * dt,
         degToRad * gy * dt,
         degToRad * gz * dt);
+    
+    // tf2::Transform rotationTransform{bodyToMpu.inverse()}
 
-    stampedMpuTransform.mult(stampedMpuTransform, tf2::Transform(rotation));
-    ROS_INFO_STREAM("dt: " << dt);
+    // robotLocation.mult(robotLocation, bodyToMpu.inverse());
+    
+    robotLocation.mult(robotLocation, tf2::Transform(
+        bodyToMpu.inverse().getRotation() * rotation * bodyToMpu.getRotation()));
+    // robotLocation.mult(robotLocation, bodyToMpu);
 }
 
 void accelCallback(const geometry_msgs::AccelStamped& accel_msg){
-    static tf2_ros::TransformBroadcaster br;
-    double dt = (accel_msg.header.stamp - stampedMpuTransform.stamp_).toSec();
+    static tf2_ros::StaticTransformBroadcaster br;
+    double dt = (accel_msg.header.stamp - robotLocation.stamp_).toSec();
 
     if (dt < 0)
-        ROS_ERROR_STREAM("accel_msg.header.stamp: " << accel_msg.header.stamp << ", stampedMpuTransform.stamp_: " << stampedMpuTransform.stamp_);
+        ROS_ERROR_STREAM("accel_msg.header.stamp: " << accel_msg.header.stamp << ", robotLocation.stamp_: " << robotLocation.stamp_);
 
     UpdateTransform(accel_msg.accel, dt);
 
-    stampedMpuTransform.stamp_ = accel_msg.header.stamp;
+    robotLocation.stamp_ = accel_msg.header.stamp;
 
-    tf2::Stamped<tf2::Transform> stampedBodyTransform = stampedMpuTransform;
-
+    tf2::Stamped<tf2::Transform> stampedBodyTransform = robotLocation;
     auto transform_msg = tf2::toMsg(stampedBodyTransform);
     transform_msg.child_frame_id = "body";
     br.sendTransform(transform_msg);
 }
 
-tf2::Transform GetBodyToImuTransform()
+tf2::Transform GetBodyToMpuTransform()
 {
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
@@ -95,13 +100,30 @@ int main(int argc, char **argv)
     ros::NodeHandle private_node("~");
     ros::NodeHandle node;
 
-    bodyToMpu = GetBodyToImuTransform();
+    // bodyToMpu = GetBodyToMpuTransform();
 
-    tf2::Quaternion rotation = loadInitialRotation(private_node);
-    stampedMpuTransform.setRotation(rotation);
-    stampedMpuTransform.frame_id_ = "map";
+    // tf2::Quaternion rotation = loadInitialRotation(private_node);
+    // robotLocation.setRotation(rotation);
+    // robotLocation.frame_id_ = "map";
 
-    ros::Subscriber sub = node.subscribe("/mpu/acceleration", 1000, accelCallback);
-    ros::spin();
+    // ros::Subscriber sub = node.subscribe("/mpu/acceleration", 1000, accelCallback);
+
+
+    tf2_ros::TransformBroadcaster transformBroadcaster{};
+    tf2::Stamped<tf2::Transform> transform{};
+    transform.setIdentity();
+    transform.frame_id_ = "map";
+
+    ros::Duration period{0.5};
+
+    while (ros::ok())
+    {
+        transform.stamp_ = ros::Time::now();
+        geometry_msgs::TransformStamped transformMsg = tf2::toMsg(transform);
+        transformMsg.child_frame_id = "body";
+        transformBroadcaster.sendTransform(transformMsg);
+        period.sleep();
+        ros::spinOnce();
+    }
     return 0;
 };
