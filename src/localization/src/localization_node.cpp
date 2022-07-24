@@ -10,7 +10,6 @@
 
 std::unique_ptr<tf2_ros::TransformBroadcaster> transformBroadcaster;
 tf2::Stamped<tf2::Transform> robotLocation{};
-
 tf2::Transform bodyToMpu;
 
 tf2::Quaternion loadInitialRotation(
@@ -57,8 +56,8 @@ void UpdateTransform(geometry_msgs::Accel accel, double dt)
         degToRad * gy * dt,
         degToRad * gz * dt);
 
-    robotLocation.mult(robotLocation, tf2::Transform(
-        rotation));
+    // Puts the mpu rotation in the body's frame before rotating the robot location.
+    robotLocation *= tf2::Transform(bodyToMpu.inverse().getRotation() * rotation * bodyToMpu.getRotation());
 }
 
 double getChangeInTimeSinceLastUpdate(const ros::Time & newStamp) {
@@ -108,7 +107,7 @@ int main(int argc, char **argv)
 
     transformBroadcaster = std::make_unique<tf2_ros::TransformBroadcaster>();
 
-    // bodyToMpu = GetBodyToMpuTransform();
+    bodyToMpu = GetBodyToMpuTransform();
 
     ros::Subscriber sub = node.subscribe("/mpu/acceleration", 1000, accelCallback);
 
