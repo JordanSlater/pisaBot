@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /Status1
         - /RobotModel1
+        - /Marker1
       Splitter Ratio: 0.5
     Tree Height: 719
   - Class: rviz/Selection
@@ -68,12 +69,28 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        ideal_mpu:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        mpu:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
       Name: RobotModel
-      Robot Description: /localization/robot_description
+      Robot Description: /robot_description
       TF Prefix: ""
       Update Interval: 0
       Value: true
       Visual Enabled: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /display
+      Name: Marker
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
