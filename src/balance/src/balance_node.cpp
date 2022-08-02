@@ -46,7 +46,8 @@ int main(int argc, char** argv){
     bool balancing = false;
 
     ros::Publisher balancingPublisher = node.advertise<std_msgs::Bool>("balancing", 100);
-    ros::Publisher errorAnglePublisher = node.advertise<std_msgs::Float64>("balancing", 100);
+    ros::Publisher errorAnglePublisher = node.advertise<std_msgs::Float64>("angle_error", 100);
+    ros::Publisher setPointAnglePublisher = node.advertise<std_msgs::Float64>("angle_setpoint", 100);
 
     ros::Rate rate(10); // Hz
     while (node.ok()){
@@ -56,20 +57,24 @@ int main(int argc, char** argv){
             double angle = getAngleInDegrees(transformStamped);
             ROS_INFO_STREAM("Angle: " << angle);
 
-            if (fabs(angle + targetAngleInDegrees) < 10)
+            if (fabs(angle - targetAngleInDegrees) < 10)
                 balancing = true;
-            else if (fabs(angle + targetAngleInDegrees) > 45)
+            else if (fabs(angle - targetAngleInDegrees) > 45)
                 balancing = false;
 
             std_msgs::Bool balancingMsg;
             balancingMsg.data = balancing;
             balancingPublisher.publish((balancingMsg));
+
+            std_msgs::Float64 setPointAngleMsg;
+            setPointAngleMsg.data = targetAngleInDegrees;
+            setPointAnglePublisher.publish(setPointAngleMsg);
             
-            if (balancing) {
-                std_msgs::Float64 angleMsg;
-                angleMsg.data = angle;
-                errorAnglePublisher.publish(std_msgs::Float64(angle));
-            }
+            // if (balancing) {
+                std_msgs::Float64 errorAngleMsg;
+                errorAngleMsg.data = angle;
+                errorAnglePublisher.publish(errorAngleMsg);
+            // }
         }
         catch (tf2::TransformException &ex) {
             ROS_WARN("%s", ex.what());

@@ -3,6 +3,7 @@
     <param name="target_angle_degrees" value="10.0" />
     <node name="balance" pkg="balance" type="balance_node" output="screen"/>
     <node name="gpio" pkg="gpio" type="gpio_node.py" />
+
     <node name="pid_controller" pkg="pid" type="controller" >
       <param name="Kp" value="5.0" />
       <param name="Ki" value="0.0" />
@@ -13,8 +14,9 @@
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       
-      <param name="pid_enable_topic" value="balancing" />
-      <param name="topic_from_plant" value="angle_error" />
+      <!-- <param name="pid_enable_topic" value="/balancing" /> -->
+      <remap from="setpoint" to="angle_setpoint" />
+      <remap from="topic_from_plant" to="angle_error" />
       <!-- <param name="topic_from_controller" value="set_speed_left_motor" /> -->
     </node>
 </launch>
