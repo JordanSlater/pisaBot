@@ -16,7 +16,9 @@
       
       <!-- <param name="pid_enable_topic" value="/balancing" /> -->
       <remap from="setpoint" to="angle_setpoint" />
-      <remap from="topic_from_plant" to="angle_error" />
+
+      <!-- Might be able to do this instead of the next line: <remap from="state" to="angle_error" /> -->
+      <param name="topic_from_plant" value="angle_error"/>
       <!-- <param name="topic_from_controller" value="set_speed_left_motor" /> -->
     </node>
 </launch>
