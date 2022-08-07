@@ -70,11 +70,13 @@ int main(int argc, char** argv){
             setPointAngleMsg.data = targetAngleInDegrees;
             setPointAnglePublisher.publish(setPointAngleMsg);
             
-            // if (balancing) {
-                std_msgs::Float64 errorAngleMsg;
+            std_msgs::Float64 errorAngleMsg;
+            if (balancing) {
                 errorAngleMsg.data = angle;
-                errorAnglePublisher.publish(errorAngleMsg);
-            // }
+            } else {
+                errorAngleMsg.data = 0;
+            }
+            errorAnglePublisher.publish(errorAngleMsg);
         }
         catch (tf2::TransformException &ex) {
             ROS_WARN("%s", ex.what());
