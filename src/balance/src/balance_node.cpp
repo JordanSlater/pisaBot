@@ -5,6 +5,7 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Empty.h>
 
 inline tf2::Vector3 projectOntoPlane(tf2::Vector3 vector, tf2::Vector3 planeNormal) {
     return vector - (planeNormal.dot(vector)) * planeNormal / planeNormal.length2();
@@ -44,8 +45,10 @@ int main(int argc, char** argv){
     ROS_INFO_STREAM("Loaded target_angle_degrees = " << targetAngleInDegrees);
     
     bool balancing = false;
+    bool wasBalancing = false;
 
     ros::Publisher balancingPublisher = node.advertise<std_msgs::Bool>("balancing", 100);
+    ros::Publisher emergencyStopPublisher = node.advertise<std_msgs::Empty>("emergency_stop", 100);
     ros::Publisher errorAnglePublisher = node.advertise<std_msgs::Float64>("angle_error", 100);
     ros::Publisher setPointAnglePublisher = node.advertise<std_msgs::Float64>("angle_setpoint", 100);
 
@@ -70,13 +73,16 @@ int main(int argc, char** argv){
             setPointAngleMsg.data = targetAngleInDegrees;
             setPointAnglePublisher.publish(setPointAngleMsg);
             
-            std_msgs::Float64 errorAngleMsg;
             if (balancing) {
+                std_msgs::Float64 errorAngleMsg;
                 errorAngleMsg.data = angle;
-            } else {
-                errorAngleMsg.data = 0;
+                errorAnglePublisher.publish(errorAngleMsg);
             }
-            errorAnglePublisher.publish(errorAngleMsg);
+            if (!balancing && wasBalancing) {
+                std_msgs::Empty emptyMsg;
+                emergencyStopPublisher.publish(emptyMsg);
+            }
+            wasBalancing = balancing;
         }
         catch (tf2::TransformException &ex) {
             ROS_WARN("%s", ex.what());

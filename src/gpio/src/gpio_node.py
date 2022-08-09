@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, Empty
 import RPi.GPIO as GPIO
 import queue
 import time
@@ -58,10 +58,18 @@ def main():
 
     rospy.Subscriber('set_speed_right_motor', Float64, right_motor.set_speed)
     rospy.Subscriber('set_speed_left_motor', Float64, left_motor.set_speed)
+
     def set_speed_both_motors(speed_msg):
         right_motor.set_speed(speed_msg)
         left_motor.set_speed(speed_msg)
     rospy.Subscriber('set_speed_both_motors', Float64, set_speed_both_motors)
+
+    def emergency_stop(_):
+        reason = "gpio received emergency stop message. Shutting down."
+        rospy.logerr(reason)
+        rospy.signal_shutdown(reason)
+
+    rospy.Subscriber('emergency_stop', Empty, emergency_stop)
     rospy.loginfo("Motor services up.")
 
     try:
