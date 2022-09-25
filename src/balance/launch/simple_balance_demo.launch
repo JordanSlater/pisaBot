@@ -1,11 +1,11 @@
 <launch>
     <include file="$(find localization)/launch/localization.launch" />
-    <param name="target_angle_degrees" value="10.0" />
+    <param name="target_angle_degrees" value="15.0" />
     <node name="balance" pkg="balance" type="balance_node" output="screen"/>
     <node name="gpio" pkg="gpio" type="gpio_node.py" />
 
     <node name="pid_controller" pkg="pid" type="controller" >
-      <param name="Kp" value="0.0" />
+      <param name="Kp" value="0.8" />
       <param name="Ki" value="0.0" />
       <param name="Kd" value="0.0" />
       <param name="upper_limit" value="1" />

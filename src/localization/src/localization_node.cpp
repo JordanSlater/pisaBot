@@ -86,7 +86,7 @@ tf2::Transform GetBodyToMpuTransform()
     tf2_ros::TransformListener tfListener(tfBuffer);
     ROS_INFO_STREAM("Getting mpu transform...");
     tf2::Transform bodyToMpu;
-    geometry_msgs::TransformStamped stampedBodyToMpuMsg = tfBuffer.lookupTransform("body", "mpu", ros::Time(0), ros::Duration(10));
+    geometry_msgs::TransformStamped stampedBodyToMpuMsg = tfBuffer.lookupTransform("body", "mpu", ros::Time(0), ros::Duration(20));
     geometry_msgs::Transform bodyToMpuMsg = stampedBodyToMpuMsg.transform;
     tf2::fromMsg(bodyToMpuMsg, bodyToMpu);
     ROS_INFO_STREAM("Done");

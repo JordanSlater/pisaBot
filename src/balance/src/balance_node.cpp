@@ -57,38 +57,39 @@ int main(int argc, char** argv){
         geometry_msgs::TransformStamped transformStamped;
         try{
             transformStamped = tfBuffer.lookupTransform("map", "body", ros::Time(0));
-            double angle = getAngleInDegrees(transformStamped);
-            ROS_INFO_STREAM("Angle: " << angle);
-
-            if (fabs(angle - targetAngleInDegrees) < 10)
-                balancing = true;
-            else if (fabs(angle - targetAngleInDegrees) > 45)
-                balancing = false;
-
-            std_msgs::Bool balancingMsg;
-            balancingMsg.data = balancing;
-            balancingPublisher.publish((balancingMsg));
-
-            std_msgs::Float64 setPointAngleMsg;
-            setPointAngleMsg.data = targetAngleInDegrees;
-            setPointAnglePublisher.publish(setPointAngleMsg);
-            
-            if (balancing) {
-                std_msgs::Float64 errorAngleMsg;
-                errorAngleMsg.data = angle;
-                errorAnglePublisher.publish(errorAngleMsg);
-            }
-            if (!balancing && wasBalancing) {
-                std_msgs::Empty emptyMsg;
-                emergencyStopPublisher.publish(emptyMsg);
-            }
-            wasBalancing = balancing;
         }
         catch (tf2::TransformException &ex) {
             ROS_WARN("%s", ex.what());
             ros::Duration(1.0).sleep();
             continue;
         }
+
+        double angle = getAngleInDegrees(transformStamped);
+        ROS_INFO_STREAM("Angle: " << angle);
+
+        if (fabs(angle - targetAngleInDegrees) < 10)
+            balancing = true;
+        else if (fabs(angle - targetAngleInDegrees) > 45)
+            balancing = false;
+
+        std_msgs::Bool balancingMsg;
+        balancingMsg.data = balancing;
+        balancingPublisher.publish((balancingMsg));
+
+        std_msgs::Float64 setPointAngleMsg;
+        setPointAngleMsg.data = targetAngleInDegrees;
+        setPointAnglePublisher.publish(setPointAngleMsg);
+
+        if (balancing) {
+            std_msgs::Float64 errorAngleMsg;
+            errorAngleMsg.data = angle;
+            errorAnglePublisher.publish(errorAngleMsg);
+        }
+        if (!balancing && wasBalancing) {
+            std_msgs::Empty emptyMsg;
+            emergencyStopPublisher.publish(emptyMsg);
+        }
+        wasBalancing = balancing;
 
         rate.sleep();
     }
