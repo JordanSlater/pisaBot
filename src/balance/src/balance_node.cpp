@@ -67,9 +67,9 @@ int main(int argc, char** argv){
         double angle = getAngleInDegrees(transformStamped);
         ROS_INFO_STREAM("Angle: " << angle);
 
-        if (fabs(angle - targetAngleInDegrees) < 10)
+        if (angle - targetAngleInDegrees > 0 && angle - targetAngleInDegrees < 10) // starts from -ve 
             balancing = true;
-        else if (fabs(angle - targetAngleInDegrees) > 45)
+        else if (fabs(angle - targetAngleInDegrees) > 30)
             balancing = false;
 
         std_msgs::Bool balancingMsg;
@@ -88,6 +88,7 @@ int main(int argc, char** argv){
         if (!balancing && wasBalancing) {
             std_msgs::Empty emptyMsg;
             emergencyStopPublisher.publish(emptyMsg);
+            ros::shutdown();
         }
         wasBalancing = balancing;
 
