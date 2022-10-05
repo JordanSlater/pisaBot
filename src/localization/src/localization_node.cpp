@@ -8,9 +8,12 @@
 #include <geometry_msgs/AccelStamped.h>
 #include <geometry_msgs/TransformStamped.h>
 
-std::unique_ptr<tf2_ros::TransformBroadcaster> transformBroadcaster;
-tf2::Stamped<tf2::Transform> robotLocation{};
-tf2::Transform bodyToMpu;
+namespace {
+    std::unique_ptr<tf2_ros::TransformBroadcaster> transformBroadcaster;
+    tf2::Stamped<tf2::Transform> robotLocation{};
+    tf2::Transform bodyToMpu;
+    double low_pass_filter_alpha;
+}
 
 tf2::Quaternion loadInitialRotation(
     const ros::NodeHandle & private_node)
@@ -31,16 +34,13 @@ tf2::Quaternion loadInitialRotation(
 
 void UpdateTransform(geometry_msgs::Accel accel, double dt)
 {
-    // this was tuned when dt was roughly 0.054 to 0.066
-    const double alpha = 1.0 + 0 *0.94;
+    // a value of 0.94 was found to be best when dt was roughly 0.054 to 0.066
+    const double alpha = low_pass_filter_alpha;
 
-    static double gx, gy, gz;
+    static double gx = 0, gy = 0, gz = 0;
     static bool first = true;
     if (first)
     {
-        gx = accel.angular.x;
-        gy = accel.angular.y;
-        gz = accel.angular.z;
         first = false;
         return;
     } else {
@@ -102,6 +102,10 @@ int main(int argc, char **argv)
 
     robotLocation.setIdentity();
     tf2::Quaternion rotation = loadInitialRotation(private_node);
+    if (!private_node.param("low_pass_filter_alpha", low_pass_filter_alpha, 1.0))
+    {
+        ROS_WARN_STREAM("Could not load low_pass_filter_alpha param. Using 1.0 by default.");
+    }
     robotLocation.setRotation(rotation);
     robotLocation.frame_id_ = "map";
 

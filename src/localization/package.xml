@@ -50,7 +50,6 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>geometry_msgs</build_depend>
-  <build_depend>mpu</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>robot_state_publisher</build_depend>

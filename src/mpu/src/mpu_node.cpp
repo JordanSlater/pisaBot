@@ -57,11 +57,18 @@ int main(int argc, char **argv)
         return 0;
     }
 
+    double update_rate;
+    if (!private_note.getParam("update_rate", update_rate))
+    {
+        ROS_ERROR_STREAM("Could not load mpu update rate.");
+        return 0;
+    }
+
     MPU6050 mpu_device(0x68, calibration_data, false);
 
     ros::Publisher acceleration_pub = private_note.advertise<geometry_msgs::AccelStamped>("acceleration", 1000);
 
-    ros::Rate loop_rate(10);
+    ros::Rate loop_rate(update_rate);
 
     float ax, ay, az;
     float gx, gy, gz;

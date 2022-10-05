@@ -1,10 +1,13 @@
 <launch>
     <param name="robot_description" textfile="$(find localization)/urdf/bot.xml"/>
-    <include file="$(find mpu)/launch/mpu.launch" />
+    <include file="$(find mpu)/launch/mpu.launch" >
+        <arg name="update_rate" value="100" />
+    </include>
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
         <param name="use_tf_static" type="bool" value="false" />
     </node>
     <node name="localization" pkg="localization" type="localization_node" output="screen">
+        <param name="low_pass_filter_alpha"   value="1" />
         <param name="starting_orientation/roll"  value="0" />
         <param name="starting_orientation/pitch" value="-90" />
         <param name="starting_orientation/yaw"   value="0" />
