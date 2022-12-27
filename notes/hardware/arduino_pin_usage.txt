@@ -1,0 +1,20 @@
+Ways to power the arduino
+https://docs.arduino.cc/learn/electronics/power-pins
+(MAY NOT BE TRUSTWORTHY given the other two links)
+https://www.youtube.com/watch?v=c03UuefFB3A
+See this link as well.
+https://forum.arduino.cc/t/programming-arduino-via-usb-with-load-connected-to-vin/863539/2
+
+Connecting an uno with batteries:
+https://forum.arduino.cc/t/how-to-connect-12v-battery-supply-to-arduino-uno/595339/2
+
+Questions:
+Does plugging in the usb while the arduino uno is conected to power present a risk?
+How do I power eveything with my on board 12v battery?
+Current light weight battery: 11.4V on average
+I might switch to the other battery.... which is 8.4 V on average.
+
+If I use the barrel jack I'm limited to 1A.
+
+Whereas the power board I'm using is rated for 5A.
+So maybe I should do everything throught the power board and then go to the arduino...

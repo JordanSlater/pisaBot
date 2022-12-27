@@ -1,0 +1,4 @@
+I tried arduino next and that had the problem that I can't change the period of the pwm.
+This means I can't change the speed of my motors...
+
+So now I'm reconsidering ros (possibly 2) on raspberry pi.
