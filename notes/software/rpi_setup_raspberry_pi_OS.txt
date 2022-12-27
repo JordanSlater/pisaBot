@@ -1,0 +1,80 @@
+
+
+BIG RESET
+
+Since ubuntu involved a whole bunch of workarounds to get gpio working, I'm switching to raspberry pi os lite (legacy) 64 bit no .
+The legacy is to use debian buster which means I can install ros noetic.
+
+Yet, there were further odities...
+Once you don't install on ubuntu you have to choose debian and it must be arm64 or armhf (http://wiki.ros.org/noetic/Installation)
+Plus: ROS Noetic ONLY supports Buster (Debian 10). 
+And I don't want the desktop version, I want the lite version.
+
+The rpi imager program didn't have this option...
+
+So I had to dig around for a custom image that is RaspberryPi OS arm64 buster debian:
+https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2021-05-28/ download the zip
+
+But after a weekend of looking at ros 2 it seems to be the way to go. It's not very different and if I upgrade to it it will be supported longer and be more applicable to future applications.
+
+I could move away from ros but I think I still want it. I could code everything from scratch but who has the time for it. 
+Essentially what I'm trying to say is there is an alternative here which is to code pisaBot from the ground up. 
+I would be using some language (let's say... Ada? or golang or C++ or carbon) and I wouldn't have easy visualization, communication, etc. 
+I would have to install my own linear algebra library and learn how to use that. 
+
+So let's go with ros. Specifically ros2.
+
+As per the above I want a raspberry pi os so that I can use gpio easily. This means I can 
+As per https://askubuntu.com/questions/445487/what-debian-version-are-the-different-ubuntu-versions-based-on
+I found that ubuntu focal uses debian bullseye. 
+
+However, I'm just getting into it now and ros 2 doesn't have a lot of support yet :(
+I the installation ran into a couple road blocks that just aren't worth dealing with yet.
+    On the raspberry pi I ran into: 
+        jordan@pisaBot:~ $ sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+        perl: warning: Setting locale failed.
+        perl: warning: Please check that your locale settings:
+            LANGUAGE = (unset),
+            LC_ALL = (unset),
+            LANG = "en_US.UTF-8"
+            are supported and installed on your system.
+        perl: warning: Falling back to the standard locale ("C").
+        *** update-locale: Error: invalid locale settings:  LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+    On my ubuntu desktop I ran into: 
+        jordan@jordan-GL553VD:~$ sudo apt install ros-foxy-desktop
+        Reading package lists... Done
+        Building dependency tree       
+        Reading state information... Done
+        E: Unable to locate package ros-foxy-desktop
+
+        This is because x86 cpu architecture isn't a high teir support for ros 2 and it hasn't been developed yet.
+        I don't think I can change my cpu architecture...
+
+It's back to ros 1...
+
+Things I did:
+Install the image with the rpi imager:
+    Rename host to pisaBot
+    Enable ssh
+    setup user and pass
+    Configure wireless LAN
+sudo apt update
+sudo apt upgrade
+generate ssh key
+Install git vim ros-noetic
+sudo apt-get install -y python-smbus
+sudo apt-get install -y i2c-tools
+rebooted
+
+But I can't even find good c++ support on raspberrypi os for gpio.
+It looks like I'm going to have to have a python node for gpio anyway.
+
+What I need:
+pwm
+i2c
+interrupts
+camera support
+
+Man, raspberry pi sucks
+
+

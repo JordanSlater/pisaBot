@@ -38,55 +38,29 @@ for both rpi and ubuntu
 To setup the raspberry pi:
 1. I installed ubuntu 20.04 on my laptop.
 2. I installed the rpi installer and wrote ubuntu core 20.04 to the sd card.
-3. I booted the rpi with said sd card and connected it with ethernet. 
+3. I booted the rpi with said sd card and connected it with ethernet. (may not be required)
 4. Connecting to wifi did not work because ubuntu tries to connect using a strange protocol that is not WPA. After a long time of trying to connect I found that using the program wpa_supplicant (this is the cli program name) works.
-5. I added a wifi config by running the following command:
-wpa_passphrase "NETWORK_NAME" password | sudo tee /etc/wpa_supplicant/wpa_supplicant.conf
-6. I created a very crewd script called connect_to_wifi.sh:
-#!/bin/bash/sh
-echo "******************"
-echo "CONNECTING TO WIFI"
-echo "******************"
-sudo wpa_supplicant -c /etc/wpa_supplicant/wpa_supplicant.conf -i wlan0 & echo "sudo PID "$!
-sleep 3
-sudo dhclient wlan0
-ifconfig wlan0
-echo "DONE?"
-7. And another very crewd script called disconnect_wifi.sh:
-#!/bin/bash/sh
+NOTE: there may be a better way to configure the wifi. wpa_supplicant is already running. 
+    In future it's better to do this on the host computer before booting the pi.
+    turns out that it's being run from here: /etc/netplan/50-something.yaml
+    Try here: https://askubuntu.com/questions/1245253/set-multiple-wifi-access-points-in-ubuntu-20-04
+    To add a network to the config, use wpa_passphrase to append to the file:
+        `wpa_passphrase "Other network name" password | sudo tee -a /etc/netplan/50-cloud-init.yaml`
+    Then reformat the to match the above link. i.e.
+        access-points:
+          "SSID1":
+            password: "pass1"
+          "SSID2":
+            password: "pass2"
 
-PROCESSES=$(ps -e | grep "wpa_supplicant")
-WPA_PID=$(echo $PROCESSES | cut -d ' ' -f1)
-
-if [ -z $WPA_PID ]
-then
-    echo "No PID found for wpa_supplicant. Exiting."
-    return 0
-fi
-
-echo
-echo "Process with wpa_supplicant in the command:"
-echo $PROCESSES
-echo
-echo "Would you like to kill PID "$WPA_PID"? (y/n)"
-
-read input
-
-if [ $input = "y" ]
-then
-    echo "Killing PID "$WPA_PID"..."
-    sudo kill $WPA_PID
-    sleep 2
-    echo "DONE?"
-fi
-8. I made the script executable (chmod +x SCRIPT_NAME)
-9. I then used the following command to add the script to the reboot process
-sudo crontab -eu root
-10. The text I entered was:
-@reboot sh /home/ubuntu/connect_to_wifi.sh
-11. Then I rebooted and it automatically connects to the wifi!
 
 Once I was setup and remoted in:
+    I installed ros: (followed instructions including sudo apt install ros-noetic-desktop)
+        $ sudo add-apt-repository universe
+        $ sudo add-apt-repository multiverse
+        $ sudo add-apt-repository restricted
+        To check that this worked:
+        $ grep ^deb /etc/apt/sources.list
 1. I cloned the root repo.
 2. I cloned jshen.
 3. I ran `git submodule update --init` to clone the MPU6050 submodule.
@@ -112,3 +86,6 @@ Once I was setup and remoted in:
     followed: https://sourceforge.net/p/raspberry-gpio-python/wiki/install/
 
     I'm not sure what of the three above things did it. 
+
+    
+I think it's actually ubuntu server

@@ -1,0 +1,5 @@
+All options listed here:
+https://raspberrypi.stackexchange.com/questions/117591/controlling-raspberry-pi-gpio-with-c-and-python/117592#117592
+
+Seems like this is the best option for C linux raspberry pi:
+http://abyz.me.uk/lg/
